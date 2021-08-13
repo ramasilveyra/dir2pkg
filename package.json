@@ -1,0 +1,30 @@
+{
+  "name": "dir2pkg",
+  "version": "1.0.0-beta.0",
+  "main": "dist/index.js",
+  "license": "MIT",
+  "bin": {
+    "dir2pkg": "bin/dir2pkg"
+  },
+  "files": [
+    "bin",
+    "dist"
+  ],
+  "scripts": {
+    "prepublish": "yarn run build",
+    "build": "babel src -d dist -s"
+  },
+  "dependencies": {
+    "@babel/parser": "^7.15.3",
+    "@babel/traverse": "^7.15.0",
+    "bluebird": "^3.7.2",
+    "globby": "^11.0.0",
+    "ora": "^5.4.1",
+    "yargs": "^17.1.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.14.8",
+    "@babel/core": "^7.15.0",
+    "@babel/preset-env": "^7.15.0"
+  }
+}
