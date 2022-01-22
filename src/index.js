@@ -4,12 +4,16 @@ import repl from 'repl';
 import { createRequire } from 'module';
 import globby from 'globby';
 import Bluebird from 'bluebird';
+import _ from 'lodash';
 import { parse as babelParse } from '@babel/parser';
 import babelTraverse from '@babel/traverse';
 
 export default async function dir2pkg(pattern, hostpkgJsonPath, { ignore = [] } = {}) {
   const filePathList = await globby(pattern);
-  const hostPkgJson = JSON.parse(await fs.readFile(hostpkgJsonPath, { encoding: 'utf8' }));
+  const hostPkgJson = _.defaults(JSON.parse(await fs.readFile(hostpkgJsonPath, { encoding: 'utf8' })), {
+    dependencies: {},
+    devDependencies: {},
+  });
 
   const dependenciesRawList = [];
   const dependenciesRawListFilePath = [];
@@ -91,7 +95,7 @@ export default async function dir2pkg(pattern, hostpkgJsonPath, { ignore = [] } 
       if (messageMatch) {
         const newMessage = [
           error.message.slice(0, messageMatch[0].length),
-          `, use "--ignore ${messageMatch[1]}" to fix this issue`,
+          `, install it or use "--ignore ${messageMatch[1]}" to fix this issue`,
           error.message.slice(messageMatch[0].length),
         ].join('');
         error.message = newMessage;
