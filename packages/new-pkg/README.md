@@ -1,1 +1,0 @@
-# @org/new-pkg
