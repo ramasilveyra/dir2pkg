@@ -10,25 +10,43 @@ export default function dir2pkgCli(argv) {
   console.log(chalk.bold.white(`${pkg.name} v${pkg.version}`));
 
   const parsedArgv = yargs(argv)
-    .option('p', {
-      alias: 'pattern',
-      describe: 'Glob pattern',
+    .option('in-dir', {
+      alias: 'i',
+      describe: 'In directory',
       type: 'string',
       demandOption: true,
     })
-    .option('j', {
-      alias: 'pkg-json-path',
+    .option('out-dir', {
+      alias: 'o',
+      describe: 'Out directory',
+      type: 'string',
+      demandOption: true,
+    })
+    .option('pkg-json-name', {
+      alias: 'n',
+      describe: 'package name',
+      type: 'string',
+      demandOption: true,
+    })
+    .option('pkg-json-path', {
+      alias: 'p',
       describe: 'Host package.json path',
       type: 'string',
       demandOption: true,
     })
-    .option('i', {
-      alias: 'ignore',
+    .option('ignore', {
+      alias: 'd',
       describe: 'List of dependencies to ignore',
       type: 'array',
       default: [],
     })
-    .usage(`${pkg.description}.\nUsage: $0 <file or dir> [options]`)
+    .option('force-peer-dep', {
+      alias: 'f',
+      describe: 'List of dependencies to force as peer dependencies',
+      type: 'array',
+      default: [],
+    })
+    .usage(`${pkg.description}.\nUsage: $0 [options]`)
     .version()
     .alias('version', 'v')
     .help()
@@ -41,13 +59,19 @@ export default function dir2pkgCli(argv) {
 
   spinner.start();
 
-  return dir2pkg(path.join(process.cwd(), parsedArgv.p), path.join(process.cwd(), parsedArgv.j), {
-    ignore: parsedArgv.i,
-    progress,
-  })
-    .then((result) => {
+  return dir2pkg(
+    path.join(process.cwd(), parsedArgv.inDir),
+    path.join(process.cwd(), parsedArgv.outDir),
+    {
+      pkgJsonName: parsedArgv.pkgJsonName,
+      pkgJsonPath: path.join(process.cwd(), parsedArgv.pkgJsonPath),
+      ignore: parsedArgv.ignore,
+      forcePeerDep: parsedArgv.forcePeerDep,
+      progress,
+    }
+  )
+    .then(() => {
       spinner.succeed(`${chalk.bold.green('success')} converted directory to package`);
-      console.log(JSON.stringify(result, null, '  '));
     })
     .catch((err) => {
       spinner.stopAndPersist();

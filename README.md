@@ -2,7 +2,7 @@
 
 Small CLI to help to split big JS codebases into packages.
 
-Currently only reports the "dependencies" field of the new package, with these benefits:
+Moves dirs, creates boilerplate and creates the "dependencies" field of the new package with these benefits:
 - 🧹 dependencies used in the code but missing from the package.json are added.
 - ➕ only dependencies used in the code are listed. 
 - ➖ dependencies not used in the code are removed.
@@ -30,16 +30,32 @@ $ npm install -g dir2pkg
 <h2 align="center">Usage</h2>
 
 ```bash
-$ dir2pkg --pattern "shared/**/*.{js,jsx,ts,tsx}" --pkg-json-path ./package.json
+$ dir2pkg --in-dir some-dir --out-dir packages/some-dir --pkg-json-name "@org/new-pkg" --pkg-json-path ./package.json
 ```
 
-#### --pattern, -p
+#### --in-dir, -i
 
 ```bash
-$ dir2pkg --pattern "shared/**/*.{js,jsx,ts,tsx}"
+$ dir2pkg --in-dir some-dir
 ```
 
-Glob pattern of files to check
+In directory
+
+#### --out-dir, -o
+
+```bash
+$ dir2pkg --out-dir packages/some-dir
+```
+
+Out directory
+
+#### --pkg-json-name, -n
+
+```bash
+$ dir2pkg --pkg-json-name "@org/new-pkg"
+```
+
+Package name
 
 #### --pkg-json-path, -j
 
@@ -49,13 +65,21 @@ $ dir2pkg --pkg-json-path ./package.json
 
 Host package.json path
 
-#### --ignore, -i
+#### --ignore, -d
 
 ```bash
 $ dir2pkg --ignore "shared" --ignore "@org/internal-alias"
 ```
 
 List of dependencies to ignore. Useful for ignoring internal alias that can't be resolved to one node_modules dep.
+
+#### --force-peer-dep, -f
+
+```bash
+$ dir2pkg --force-peer-dep react --force-peer-dep react-dom
+```
+
+List of dependencies to force as peer dependencies. Useful for libraries like react.
 
 <h2 align="center">Development</h2>
 
